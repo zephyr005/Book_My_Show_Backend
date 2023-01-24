@@ -41,20 +41,20 @@ public class ShowService {
             currentListOfShow.add(showEntity);
             movieEntity.setListOfShows(currentListOfShow);
         * */
-        movieEntity.getListOfShows().add(showEntity);
-        theaterEntity.getListOfShows().add(showEntity);
+        movie.getListOfShows().add(show);
+        theater.getListOfShows().add(show);
 
-        List<ShowSeatEntity> seatEntityList = createShowSeats(theaterEntity.getTheaterSeatEntityList());
+        List<ShowSeatEntity> seatEntityList = createShowSeats(theater.getTheaterSeatEntityList());
 
-        showEntity.setListOfSeats(seatEntityList);
+        show.setListOfSeats(seatEntityList);
 
         //For each showSeat : we need to mark that to which show it belongs (foreign key will be filled)
         for(ShowSeatEntity showSeat : seatEntityList){
-            showSeat.setShow(showEntity);
+            showSeat.setShow(show);
         }
 
-        movieRepository.save(movieEntity);
-        theaterRepository.save(theaterEntity);
+        movieRepository.save(movie);
+        theaterRepository.save(theater);
         //showRepository.save(showEntity); This doesn't need to call bcz parent save function is being called.
 
         return "Show added successfully";

@@ -1,6 +1,7 @@
 package AccioJob.Book_My_Show_Backend.Controllers;
 
 import AccioJob.Book_My_Show_Backend.DTOs.BookTicketRequestDto;
+import AccioJob.Book_My_Show_Backend.Service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

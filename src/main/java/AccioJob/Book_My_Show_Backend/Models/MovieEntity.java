@@ -1,10 +1,12 @@
 package AccioJob.Book_My_Show_Backend.Models;
 
 import jakarta.persistence.*;
+import jdk.jfr.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 import java.util.List;
@@ -25,6 +27,7 @@ public class MovieEntity {
 
     private int duration;
 
+    @CreationTimestamp
     private Date releaseDate;
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)

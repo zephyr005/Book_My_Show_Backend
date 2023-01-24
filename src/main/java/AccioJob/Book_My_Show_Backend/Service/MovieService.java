@@ -18,4 +18,9 @@ public class MovieService {
         movieRepository.save(movie);
         return "Movie added successfully";
     }
+
+    public MovieEntity findMovieByName(String movieName) {
+        MovieEntity movie = movieRepository.findByMovieName(movieName);
+        return movie;
+    }
 }

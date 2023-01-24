@@ -1,5 +1,6 @@
 package AccioJob.Book_My_Show_Backend.Models;
 
+import AccioJob.Book_My_Show_Backend.Enums.SeatType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +26,9 @@ public class ShowSeatEntity {
     private boolean booked;
 
     private Date bookedAt;
+
+    @Enumerated(value = EnumType.STRING)
+    private SeatType seatType;
 
     @ManyToOne
     @JoinColumn
