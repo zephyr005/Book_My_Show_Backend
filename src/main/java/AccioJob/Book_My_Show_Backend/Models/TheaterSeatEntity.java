@@ -1,7 +1,7 @@
 package AccioJob.Book_My_Show_Backend.Models;
 
 import AccioJob.Book_My_Show_Backend.Enums.SeatType;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

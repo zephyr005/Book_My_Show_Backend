@@ -82,4 +82,9 @@ public class TheaterService {
         List<TheaterEntity> theaterEntityList = theaterRepository.findAll();
         return theaterEntityList;
     }
+
+    public List<TheaterSeatEntity> findAllTheaterSeats() {
+        List<TheaterSeatEntity> theaterSeatEntityList = theaterSeatRepository.findAll();
+        return theaterSeatEntityList;
+    }
 }

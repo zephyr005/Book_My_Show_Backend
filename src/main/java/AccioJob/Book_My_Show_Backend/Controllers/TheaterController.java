@@ -2,6 +2,7 @@ package AccioJob.Book_My_Show_Backend.Controllers;
 
 import AccioJob.Book_My_Show_Backend.DTOs.TheaterRequestDto;
 import AccioJob.Book_My_Show_Backend.Models.TheaterEntity;
+import AccioJob.Book_My_Show_Backend.Models.TheaterSeatEntity;
 import AccioJob.Book_My_Show_Backend.Service.TheaterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +31,10 @@ public class TheaterController {
     @GetMapping("/find_all_theater")
     public List<TheaterEntity> findAllTheaters(){
         return theaterService.findAllTheaters();
+    }
+
+    @GetMapping("/find_all_theater_seats")
+    public List<TheaterSeatEntity> findAllSeats(){
+        return theaterService.findAllTheaterSeats();
     }
 }

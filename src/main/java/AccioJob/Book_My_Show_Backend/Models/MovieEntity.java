@@ -1,6 +1,6 @@
 package AccioJob.Book_My_Show_Backend.Models;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import jdk.jfr.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -3,7 +3,7 @@ package AccioJob.Book_My_Show_Backend.Controllers;
 import AccioJob.Book_My_Show_Backend.DTOs.UserRequestDto;
 import AccioJob.Book_My_Show_Backend.Models.UserEntity;
 import AccioJob.Book_My_Show_Backend.Service.UserService;
-import jakarta.websocket.server.PathParam;
+import javax.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
