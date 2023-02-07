@@ -1,7 +1,7 @@
 package AccioJob.Book_My_Show_Backend.Service;
 
 import AccioJob.Book_My_Show_Backend.DTOs.UserRequestDto;
-import AccioJob.Book_My_Show_Backend.Models.UserEntity;
+import AccioJob.Book_My_Show_Backend.Models.User;
 import AccioJob.Book_My_Show_Backend.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ public class UserService {
 
     public String createUser(UserRequestDto userRequestDto){
         //Converted the userRequestDto to userEntity
-        UserEntity user = UserEntity.builder().name(userRequestDto.getName()).mobile(userRequestDto.getMobile()).build();
+        User user = User.builder().name(userRequestDto.getName()).mobile(userRequestDto.getMobile()).build();
         try{
             userRepository.save(user);
         }
@@ -26,11 +26,11 @@ public class UserService {
         return "User added successfully";
     }
 
-    public UserEntity findByUserName(String name) {
+    public User findByUserName(String name) {
         return userRepository.findByName(name);
     }
 
-    public List<UserEntity> findAllUser() {
+    public List<User> findAllUser() {
         return userRepository.findAll();
     }
 }

@@ -1,13 +1,12 @@
 package AccioJob.Book_My_Show_Backend.Service;
 
 import AccioJob.Book_My_Show_Backend.DTOs.BookTicketRequestDto;
-import AccioJob.Book_My_Show_Backend.Models.ShowEntity;
-import AccioJob.Book_My_Show_Backend.Models.ShowSeatEntity;
-import AccioJob.Book_My_Show_Backend.Models.TicketEntity;
-import AccioJob.Book_My_Show_Backend.Models.UserEntity;
-import AccioJob.Book_My_Show_Backend.Repository.ShowRepository;
-import AccioJob.Book_My_Show_Backend.Repository.TicketRepository;
-import AccioJob.Book_My_Show_Backend.Repository.UserRepository;
+import AccioJob.Book_My_Show_Backend.Enums.Status;
+import AccioJob.Book_My_Show_Backend.Models.Show;
+import AccioJob.Book_My_Show_Backend.Models.ShowSeat;
+import AccioJob.Book_My_Show_Backend.Models.Ticket;
+import AccioJob.Book_My_Show_Backend.Models.User;
+import AccioJob.Book_My_Show_Backend.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,35 +25,39 @@ public class TicketService {
 
     @Autowired
     TicketRepository ticketRepository;
+    @Autowired
+    private TheaterRepository theaterRepository;
+    @Autowired
+    private ShowSeatRepository showSeatRepository;
 
     public String bookTicket(BookTicketRequestDto bookTicketRequestDto)throws Exception {
 
         //Get the request
         List<String> requestedSeats = bookTicketRequestDto.getRequestSeats();
 
-        ShowEntity showEntity = showRepository.findById(bookTicketRequestDto.getShowId()).get();
+        Show showEntity = showRepository.findById(bookTicketRequestDto.getShowId()).get();
 
-        UserEntity userEntity = userRepository.findById(bookTicketRequestDto.getUserId()).get();
+        User userEntity = userRepository.findById(bookTicketRequestDto.getUserId()).get();
 
         //Get the showSeats from showEntity
-        List<ShowSeatEntity> showSeats = showEntity.getListOfSeats();
+        List<ShowSeat> showSeats = showEntity.getListOfSeats();
 
         //Validate if I can allocate these seats to the requested by user.
 
-        List<ShowSeatEntity> bookedSeats = new ArrayList<>();
+        List<ShowSeat> unBookedSeats = new ArrayList<>();
 
-        for (ShowSeatEntity showSeat : showSeats) {
+        for (ShowSeat showSeat : showSeats) {
 
             String seatNo = showSeat.getSeatNo();
 
             if (showSeat.isBooked() == false && requestedSeats.contains(seatNo)) {
-                bookedSeats.add(showSeat);
+                unBookedSeats.add(showSeat);
             }
         }
 
 
         //FAILURE
-        if (bookedSeats.size() != requestedSeats.size()) {
+        if (unBookedSeats.size() != requestedSeats.size()) {
             //Some the seats the useRequested are not available
             throw new Exception("Requested seats are not available");
         }
@@ -62,7 +65,7 @@ public class TicketService {
 
         //SUCCESS
         //This means the bookedSeats actually contains the booked Seats.
-        TicketEntity ticketEntity = new TicketEntity();
+        Ticket ticketEntity = new Ticket();
 
         double totalAmout = 0;
         double multiplier = showEntity.getMultiplier();
@@ -72,14 +75,15 @@ public class TicketService {
 
         int rate = 0;
         //Calculating amount,setting bookedStatus, setting
-        for (ShowSeatEntity bookedSeat : bookedSeats) {
 
-            bookedSeat.setBooked(true);
-            bookedSeat.setBookedAt(new Date());
-            bookedSeat.setTicket(ticketEntity);
-            bookedSeat.setShow(showEntity);
+        for (ShowSeat unBookedSeat : unBookedSeats) {
 
-            String seatNo = bookedSeat.getSeatNo();
+            unBookedSeat.setBooked(true);
+            unBookedSeat.setBookedAt(new Date());
+            unBookedSeat.setTicket(ticketEntity);
+            unBookedSeat.setShow(showEntity);
+
+            String seatNo = unBookedSeat.getSeatNo();
 
             allotedSeats = allotedSeats + seatNo + ",";
 
@@ -91,18 +95,49 @@ public class TicketService {
             totalAmout = totalAmout + multiplier * rate;
         }
 
+        List<ShowSeat> bookedSeats = unBookedSeats;
+
         ticketEntity.setBooked_at(new Date());
         ticketEntity.setAmount((int) totalAmout);
         ticketEntity.setShow(showEntity);
         ticketEntity.setUser(userEntity);
         ticketEntity.setBookedSeats(bookedSeats);
         ticketEntity.setAlloted_seats(allotedSeats);
+        ticketEntity.setStatus(Status.ACTIVE);
 
-        //Bidirectional mapping part is pending
+        //Bidirectional mapping
+        userEntity.getListOfTickets().add(ticketEntity);
 
-        ticketRepository.save(ticketEntity);
+        userRepository.save(userEntity);
+        showRepository.save(showEntity);
 
-        return "Sucessfully created a ticket";
+        return "Ticket has been created successfully";
     }
 
+    public String cancelTicket(Integer ticketId) throws Exception{
+        Ticket ticket = ticketRepository.findById(ticketId).get();
+        List<ShowSeat> bookedSeats = ticket.getBookedSeats();
+
+        for(ShowSeat showSeat : bookedSeats){
+            showSeat.setBooked(false);
+        }
+
+        showSeatRepository.saveAll(bookedSeats);
+
+        Show show = ticket.getShow();
+
+        List<Ticket> ticketList = show.getListOfTickets();
+        ticketList.remove(ticketId);
+        show.setListOfTickets(ticketList);
+
+        ticket.setShow(show);
+        ticket.setBookedSeats(bookedSeats);
+
+        showRepository.save(show);
+        ticket.setStatus(Status.CANCELLED);
+
+        ticketRepository.save(ticket);
+
+        return "Ticket has been cancelled successfully";
+    }
 }

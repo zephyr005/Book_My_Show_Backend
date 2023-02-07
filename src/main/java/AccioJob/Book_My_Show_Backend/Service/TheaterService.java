@@ -2,8 +2,8 @@ package AccioJob.Book_My_Show_Backend.Service;
 
 import AccioJob.Book_My_Show_Backend.DTOs.TheaterRequestDto;
 import AccioJob.Book_My_Show_Backend.Enums.SeatType;
-import AccioJob.Book_My_Show_Backend.Models.TheaterEntity;
-import AccioJob.Book_My_Show_Backend.Models.TheaterSeatEntity;
+import AccioJob.Book_My_Show_Backend.Models.Theater;
+import AccioJob.Book_My_Show_Backend.Models.TheaterSeat;
 import AccioJob.Book_My_Show_Backend.Repository.TheaterRepository;
 import AccioJob.Book_My_Show_Backend.Repository.TheaterSeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +22,13 @@ public class TheaterService {
     TheaterRepository theaterRepository;
 
     public String createTheater(TheaterRequestDto theaterRequestDto){
-        TheaterEntity theater = TheaterEntity.builder().city(theaterRequestDto.getCity()).name(theaterRequestDto.getName()).address(theaterRequestDto.getAddress()).build();
+        Theater theater = Theater.builder().city(theaterRequestDto.getCity()).name(theaterRequestDto.getName()).address(theaterRequestDto.getAddress()).build();
 
-        List<TheaterSeatEntity> theaterSeats = createTheaterSeats();
-        theater.setTheaterSeatEntityList(theaterSeats);
+        List<TheaterSeat> theaterSeats = createTheaterSeats();
+        theater.setTheaterSeatList(theaterSeats);
 
         //For each theater Seat : we need to set the theaterEntity
-        for(TheaterSeatEntity theaterSeat : theaterSeats){
+        for(TheaterSeat theaterSeat : theaterSeats){
             theaterSeat.setTheater(theater);
         }
 
@@ -37,8 +37,8 @@ public class TheaterService {
         return "Theater added successfully";
     }
 
-    private List<TheaterSeatEntity> createTheaterSeats() {
-        List<TheaterSeatEntity> seats = new ArrayList<>();
+    private List<TheaterSeat> createTheaterSeats() {
+        List<TheaterSeat> seats = new ArrayList<>();
         /*
         TheaterSeatEntity theaterSeat1 = new TheaterSeatEntity("1A", SeatType.CLASSIC, 100);
         TheaterSeatEntity theaterSeat2 = new TheaterSeatEntity("1B", SeatType.CLASSIC, 100);
@@ -57,14 +57,14 @@ public class TheaterService {
         for(int i=0; i<5; i++){
             char ch = (char)('A'+i);
             String seatNo = "1"+ch;
-            TheaterSeatEntity theaterSeat = new TheaterSeatEntity(seatNo, SeatType.CLASSIC, 100);
+            TheaterSeat theaterSeat = new TheaterSeat(seatNo, SeatType.CLASSIC, 100);
             seats.add(theaterSeat);
         }
 
         for(int i=0; i<5; i++){
             char ch = (char)('A'+i);
             String seatNo = "2"+ch;
-            TheaterSeatEntity theaterSeat = new TheaterSeatEntity(seatNo, SeatType.PLATINUM, 200);
+            TheaterSeat theaterSeat = new TheaterSeat(seatNo, SeatType.PLATINUM, 200);
             seats.add(theaterSeat);
         }
 
@@ -73,18 +73,19 @@ public class TheaterService {
         return seats;
     }
 
-    public TheaterEntity findTheater(Integer theaterId) {
-        TheaterEntity theater = theaterRepository.findById(theaterId).get();
+    public Theater findTheater(Integer theaterId) {
+        Theater theater = theaterRepository.findById(theaterId).get();
         return theater;
     }
 
-    public List<TheaterEntity> findAllTheaters() {
-        List<TheaterEntity> theaterEntityList = theaterRepository.findAll();
+    public List<Theater> findAllTheaters() {
+        List<Theater> theaterEntityList = theaterRepository.findAll();
         return theaterEntityList;
     }
 
-    public List<TheaterSeatEntity> findAllTheaterSeats() {
-        List<TheaterSeatEntity> theaterSeatEntityList = theaterSeatRepository.findAll();
-        return theaterSeatEntityList;
+    public List<TheaterSeat> findAllTheaterSeats(Integer theaterId) {
+        Theater theater = theaterRepository.findById(theaterId).get();
+        List<TheaterSeat> theaterSeatList = theater.getTheaterSeatList();
+        return theaterSeatList;
     }
 }

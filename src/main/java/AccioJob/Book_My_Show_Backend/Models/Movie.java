@@ -1,6 +1,8 @@
 package AccioJob.Book_My_Show_Backend.Models;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,30 +12,27 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.util.Date;
 import java.util.List;
 
+@Table(name="movies")
 @Entity
-@Table(name="user")
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity {
-
+@NoArgsConstructor
+public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String name;
+    @Column(nullable = false, unique = true)
+    private String movieName;
 
-    private String mobile;
-
-    @CreationTimestamp
-    @Temporal(value = TemporalType.TIME)
-    private Date createdOn;
+    private int duration;
 
     @CreationTimestamp
-    @Temporal(value = TemporalType.TIME)
-    private Date updatedOn;
+    private Date releaseDate;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<TicketEntity> listOfTickets;
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private List<Show> listOfShows;
+
 }

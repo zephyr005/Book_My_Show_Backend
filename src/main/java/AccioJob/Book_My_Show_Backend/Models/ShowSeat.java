@@ -2,6 +2,8 @@ package AccioJob.Book_My_Show_Backend.Models;
 
 import AccioJob.Book_My_Show_Backend.Enums.SeatType;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +17,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ShowSeatEntity {
+public class ShowSeat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,9 +34,11 @@ public class ShowSeatEntity {
 
     @ManyToOne
     @JoinColumn
-    private ShowEntity show;
+    @JsonBackReference
+    private Show show;
 
     @ManyToOne
     @JoinColumn
-    private TicketEntity ticket;
+    @JsonBackReference
+    private Ticket ticket;
 }

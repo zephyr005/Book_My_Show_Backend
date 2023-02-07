@@ -1,6 +1,8 @@
 package AccioJob.Book_My_Show_Backend.Models;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,12 +21,13 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShowEntity {
+public class Show {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private LocalDate showDate;
+
 
     private LocalTime showTime;
 
@@ -38,15 +41,19 @@ public class ShowEntity {
 
     @ManyToOne
     @JoinColumn
-    private MovieEntity movie;
+    @JsonBackReference
+    private Movie movie;
 
     @ManyToOne
     @JoinColumn
-    private TheaterEntity theater;
+    @JsonBackReference
+    private Theater theater;
 
     @OneToMany(mappedBy = "show", cascade = CascadeType.ALL)
-    private List<ShowSeatEntity> listOfSeats;
+    @JsonBackReference
+    private List<ShowSeat> listOfSeats;
 
     @OneToMany(mappedBy = "show", cascade = CascadeType.ALL)
-    private List<TicketEntity> listOfTickets;
+    @JsonBackReference
+    private List<Ticket> listOfTickets;
 }
